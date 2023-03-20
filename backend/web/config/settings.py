@@ -11,21 +11,25 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv  #add .env
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# add DIR env
 BASE_DIR = Path(__file__).resolve().parent.parent
+PROJECT_DIR = Path(BASE_DIR).stem  #also can use Path(~).name
 
+load_dotenv(Path(BASE_DIR) / '.env')  #add to 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3f(k^y%6#=n*hsd_(_1@74md$f^p&ub6-(l#lz%9_e7ge6lh2t'
+SECRET_KEY = 'django-insecure-ojiez(e72jd^t3073xf6bc84d00lnw9qlf))!7vnzx0z^!_u!e'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*'] #change to
 
 
 # Application definition
@@ -37,6 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # 3rd party
+    'rest_framework',
+    'corsheaders',
+
+    # local
+    'todo.apps.TodoConfig',
 ]
 
 MIDDLEWARE = [
@@ -47,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware', #add to
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -54,7 +67,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [(Path(BASE_DIR) / 'templates')], #change to
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,12 +86,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# delete to
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
@@ -103,9 +117,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko-kr' #'en-us', change to
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul' #'UTC', change to
 
 USE_I18N = True
 
@@ -117,7 +131,32 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+#Where to refer to static files in the development environment
+STATICFILES_DIRS = [(Path(BASE_DIR) / 'static')] #add to
+
+#Where to reference static files in production
+STATIC_ROOT = (Path(BASE_DIR) / 'staticfiles') #add to
+
+#Media file path
+MEDIA_URL = 'media/' #add to
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Rest Framework & CORS
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ]
+}
+
+CORS_ORIGIN_ALLOW_ALL = True  #<- 수정필요  
+
+CSRF_TRUSTED_ORIGINS = ['http://192.168.30.77:8080', 'http://localhost:8080']
+
+#아래 또한 수정 필요
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost', 'http://localhost:3000'
+)
